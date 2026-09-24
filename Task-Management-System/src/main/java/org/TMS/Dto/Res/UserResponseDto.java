@@ -18,6 +18,8 @@ public class UserResponseDto {
     private Long id;
 
 //    @Email
+    private String name;
+
     private String email;
 
     private String phone;

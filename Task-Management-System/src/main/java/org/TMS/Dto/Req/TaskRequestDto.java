@@ -1,7 +1,7 @@
 package org.TMS.Dto.Req;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,14 +17,18 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TaskRequestDto {
 
+    @NotBlank(message = "Title is required")
     private String title;
 
+    @NotBlank(message = "Description is required")
     private String description;
 
+    @NotNull(message = "Status is required")
     private TaskStatus status;
 
+    @NotNull(message = "Priority is required")
     private Priority priority;
 
+    @NotNull(message = "Due date is required")
     private LocalDate dueDate;
-
 }

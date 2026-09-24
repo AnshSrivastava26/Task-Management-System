@@ -1,5 +1,6 @@
 package org.TMS.Controller;
 
+import jakarta.validation.Valid;
 import org.TMS.Dto.Req.UserRequestDto;
 import org.TMS.Dto.Res.UserResponseDto;
 import org.TMS.Service.UserService;
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserRequestDto dto){
+    public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserRequestDto dto){
 
         UserResponseDto response = userService.createUser(dto);
 
@@ -46,7 +47,7 @@ public class UserController {
 
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id ,@RequestBody UserRequestDto dto){
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id ,@Valid @RequestBody UserRequestDto dto){
 
         UserResponseDto response = userService.updateUser(id,dto);
 

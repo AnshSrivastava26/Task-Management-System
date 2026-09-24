@@ -1,5 +1,6 @@
 package org.TMS.Controller;
 
+import jakarta.validation.Valid;
 import org.TMS.Dto.Req.TaskRequestDto;
 import org.TMS.Dto.Res.TaskResponseDto;
 import org.TMS.Service.TaskService;
@@ -21,7 +22,7 @@ public class TaskController {
     @PostMapping("/user/{userId}")
     public ResponseEntity<TaskResponseDto> createTask(
             @PathVariable Long userId,
-            @RequestBody TaskRequestDto dto) {
+            @Valid @RequestBody TaskRequestDto dto) {
 
         TaskResponseDto response = taskService.createTask(userId,dto);
 
@@ -69,7 +70,7 @@ public class TaskController {
     @PutMapping("/update/{id}")
     public ResponseEntity<TaskResponseDto> updateTask(
             @PathVariable Long id,
-            @RequestBody TaskRequestDto dto) {
+            @Valid @RequestBody TaskRequestDto dto) {
 
         TaskResponseDto response = taskService.updateTask(id, dto);
 
