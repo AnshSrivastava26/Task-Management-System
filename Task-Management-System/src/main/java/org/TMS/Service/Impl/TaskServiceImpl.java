@@ -4,6 +4,8 @@ import org.TMS.Dto.Req.TaskRequestDto;
 import org.TMS.Dto.Res.TaskResponseDto;
 import org.TMS.Entity.Task;
 import org.TMS.Entity.User;
+import org.TMS.Exception.TaskNotFoundException;
+import org.TMS.Exception.UserNotFoundException;
 import org.TMS.Mapper.TaskMapper;
 import org.TMS.Repository.TaskRepository;
 import org.TMS.Repository.UserRepository;
@@ -27,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDto createTask(Long userId,TaskRequestDto dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->
-                        new RuntimeException("User not found with user id -"+userId));
+                        new UserNotFoundException("User not found with user id -"+userId));
 
         Task newTask = TaskMapper.toEntity(dto);
 
@@ -55,7 +57,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskResponseDto getTaskById(Long id) {
 
         Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Task not found with the given id - "+id));
+                .orElseThrow(() -> new TaskNotFoundException("Task not found with the given id - "+id));
 
 
 
@@ -65,14 +67,14 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponseDto getTaskByTitle(String title) {
 
-        Task task = taskRepository.findByTitle(title).orElseThrow(() -> new RuntimeException("Task not found with the given title-"+title));
+        Task task = taskRepository.findByTitle(title).orElseThrow(() -> new TaskNotFoundException("Task not found with the given title-"+title));
 
         return TaskMapper.toResponse(task);
     }
 
     @Override
     public List<TaskResponseDto> getAllTasksOfAUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found with user id -"+userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with user id -"+userId));
         List<Task> tasks = taskRepository.findByUser(user);
         List<TaskResponseDto> responseList = new ArrayList<>();
         for (Task task : tasks){
@@ -84,7 +86,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public TaskResponseDto updateTask(Long id, TaskRequestDto dto) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found with the given id - "+id));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found with the given id - "+id));
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
         task.setStatus(dto.getStatus());
@@ -99,7 +101,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteTask(Long id) {
 
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found with the given id - "+id));
+        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found with the given id - "+id));
 
         taskRepository.delete(task);
     }

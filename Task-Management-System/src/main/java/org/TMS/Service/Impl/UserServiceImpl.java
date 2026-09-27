@@ -3,6 +3,7 @@ package org.TMS.Service.Impl;
 import org.TMS.Dto.Req.UserRequestDto;
 import org.TMS.Dto.Res.UserResponseDto;
 import org.TMS.Entity.User;
+import org.TMS.Exception.UserNotFoundException;
 import org.TMS.Mapper.UserMapper;
 import org.TMS.Repository.UserRepository;
 import org.TMS.Service.UserService;
@@ -44,15 +45,16 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getUserById(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->
-                        new RuntimeException("User Not Found with User id -"+id));
+                        new UserNotFoundException("User Not Found with User id -"+id));
         return UserMapper.toResponse(user);
     }
 
     @Override
     public UserResponseDto updateUser(Long id, UserRequestDto dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("User Not Found with User id -"+id));
+                .orElseThrow(()->new UserNotFoundException("User Not Found with User id -"+id));
 
+        user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
         user.setPassword(dto.getPassword());
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("User Not Found with User id -"+id));
+                .orElseThrow(()->new UserNotFoundException("User Not Found with User id -"+id));
 
         userRepository.delete(user);
     }
