@@ -15,7 +15,15 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tasks")
+@Table(
+        name = "tasks",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_user_task_title",
+                        columnNames = {"user_id", "title"}
+                )
+        }
+)
 public class Task {
 
     @Id

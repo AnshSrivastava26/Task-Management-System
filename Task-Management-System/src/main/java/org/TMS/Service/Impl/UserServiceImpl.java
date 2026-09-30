@@ -3,6 +3,7 @@ package org.TMS.Service.Impl;
 import org.TMS.Dto.Req.UserRequestDto;
 import org.TMS.Dto.Res.UserResponseDto;
 import org.TMS.Entity.User;
+import org.TMS.Exception.DuplicateUserException;
 import org.TMS.Exception.UserNotFoundException;
 import org.TMS.Mapper.UserMapper;
 import org.TMS.Repository.UserRepository;
@@ -23,6 +24,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto createUser(UserRequestDto dto) {
+        boolean existsByEmail = userRepository.existsByEmail(dto.getEmail());
+        boolean existsByPhone = userRepository.existsByPhone(dto.getPhone());
+        if (existsByEmail) {
+            throw new DuplicateUserException(
+                    "User with email '" + dto.getEmail() + "' already exists"
+            );
+        }
+
+        if (existsByPhone){
+            throw new DuplicateUserException(
+              "User with phone '"+dto.getPhone()+"' already exists"
+            );
+        }
+
         User user = UserMapper.toEntity(dto);
         return UserMapper.toResponse(userRepository.save(user));
     }
@@ -53,6 +68,23 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto updateUser(Long id, UserRequestDto dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException("User Not Found with User id -"+id));
+
+        boolean existsByEmail =
+                userRepository.existsByEmailAndIdNot(dto.getEmail(), id);
+
+        boolean existsByPhone =
+                userRepository.existsByPhoneAndIdNot(dto.getPhone(), id);
+        if (existsByEmail) {
+            throw new DuplicateUserException(
+                    "User with email '" + dto.getEmail() + "' already exists"
+            );
+        }
+
+        if (existsByPhone) {
+            throw new DuplicateUserException(
+                    "User with phone '" + dto.getPhone() + "' already exists"
+            );
+        }
 
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());

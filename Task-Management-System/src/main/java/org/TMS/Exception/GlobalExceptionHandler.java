@@ -67,4 +67,34 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(response);
     }
+
+    @ExceptionHandler(DuplicateTaskException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateTask(
+            DuplicateTaskException exception) {
+
+        ErrorResponse response = new ErrorResponse();
+
+        response.setStatus(409);
+        response.setMessage(exception.getMessage());
+        response.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateUser(
+            DuplicateUserException exception) {
+
+        ErrorResponse response = new ErrorResponse();
+
+        response.setStatus(409);
+        response.setMessage(exception.getMessage());
+        response.setTimestamp(LocalDateTime.now());
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
 }

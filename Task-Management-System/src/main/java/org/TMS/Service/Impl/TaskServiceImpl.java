@@ -4,6 +4,7 @@ import org.TMS.Dto.Req.TaskRequestDto;
 import org.TMS.Dto.Res.TaskResponseDto;
 import org.TMS.Entity.Task;
 import org.TMS.Entity.User;
+import org.TMS.Exception.DuplicateTaskException;
 import org.TMS.Exception.TaskNotFoundException;
 import org.TMS.Exception.UserNotFoundException;
 import org.TMS.Mapper.TaskMapper;
@@ -30,6 +31,14 @@ public class TaskServiceImpl implements TaskService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->
                         new UserNotFoundException("User not found with user id -"+userId));
+
+        Boolean exists = taskRepository.existsByUserAndTitle(user, dto.getTitle());
+
+        if (exists){
+            throw new DuplicateTaskException(
+                    "Task with title '" + dto.getTitle()
+                            + "' already exists for this user");
+        }
 
         Task newTask = TaskMapper.toEntity(dto);
 
@@ -87,6 +96,20 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public TaskResponseDto updateTask(Long id, TaskRequestDto dto) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Task not found with the given id - "+id));
+
+        boolean exists = taskRepository.existsByUserAndTitleAndIdNot(
+                task.getUser(),
+                dto.getTitle(),
+                id
+        );
+
+        if (exists) {
+            throw new DuplicateTaskException(
+                    "Task with title '" + dto.getTitle()
+                            + "' already exists for this user"
+            );
+        }
+
         task.setTitle(dto.getTitle());
         task.setDescription(dto.getDescription());
         task.setStatus(dto.getStatus());
