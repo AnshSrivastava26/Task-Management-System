@@ -2,6 +2,7 @@ package org.TMS.Dto.Req;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,8 @@ public class UserRequestDto {
     private String password;
 
     @NotBlank(message = "Phone is required")
-    @Size(min = 10,max = 10,message = "10 digits are required in phone number")
+    @Pattern(
+        regexp = "^[0-9]{10}$",
+        message = "Phone number must contain exactly 10 digits")
     private String phone;
 }
