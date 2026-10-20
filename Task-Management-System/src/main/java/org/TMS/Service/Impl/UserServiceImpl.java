@@ -2,6 +2,7 @@ package org.TMS.Service.Impl;
 
 import org.TMS.Dto.Req.UserRequestDto;
 import org.TMS.Dto.Res.UserResponseDto;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.TMS.Entity.User;
 import org.TMS.Exception.DuplicateUserException;
 import org.TMS.Exception.UserNotFoundException;
@@ -17,9 +18,11 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -39,6 +42,10 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = UserMapper.toEntity(dto);
+        user.setPassword(
+                passwordEncoder.encode(dto.getPassword())
+        );
+
         return UserMapper.toResponse(userRepository.save(user));
     }
 
@@ -89,7 +96,7 @@ public class UserServiceImpl implements UserService {
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setPhone(dto.getPhone());
-        user.setPassword(dto.getPassword());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
         return UserMapper.toResponse(user);
     }
